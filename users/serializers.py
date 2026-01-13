@@ -2,7 +2,18 @@ from rest_framework import serializers
 
 from users.models import User
 from users.services import generate_invite_code
+from users.validators import PhoneFieldValidator
 
+
+class PhoneSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(
+        max_length=12,
+    )
+
+    class Meta:
+        validators = [
+            PhoneFieldValidator()
+        ]
 
 class CreateUserSerializer(serializers.ModelSerializer):
 
