@@ -6,6 +6,7 @@ NULLABLE = {"null": True, "blank": True}
 
 class User(AbstractUser):
     username = None
+    password = None
 
     phone_number = models.CharField(
         max_length=15,
@@ -16,6 +17,7 @@ class User(AbstractUser):
         max_length=6,
         verbose_name="Личный инвайт-код",
         unique=True,
+        **NULLABLE,
     )
     referred_by = models.ForeignKey(
         'self',

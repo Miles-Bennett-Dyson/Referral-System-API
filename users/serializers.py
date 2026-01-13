@@ -8,11 +8,13 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["__all__"]
+        fields = ("id", "phone_number", "invite_code", "referred_by")
 
     def create(self, validated_data):
-        user = User(**validated_data)
-        invite_code = generate_invite_code()
-        user.invite_code = invite_code
-        user.save()
+        while True:
+            invite_code = generate_invite_code()
+            if not User.objects.filter(invite_code=invite_code).exists():
+                break
+        validated_data["invite_code"] = invite_code
+        user = User.objects.create(**validated_data)
         return user
