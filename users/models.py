@@ -9,7 +9,7 @@ class User(AbstractUser):
     password = None
 
     phone_number = models.CharField(
-        max_length=15,
+        max_length=12,
         verbose_name="Номер телефона",
         unique=True,
     )
