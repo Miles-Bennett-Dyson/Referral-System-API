@@ -4,7 +4,6 @@ import time
 
 from django.core.cache import cache
 from rest_framework.exceptions import ValidationError
-from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.models import User
@@ -16,11 +15,11 @@ def generate_invite_code():
     return ''.join(random.choices(characters, k=6))
 
 
-def send_sms_code(phone_number:str):
+def send_sms_code(phone_number: str):
     """ Имитация отправки смс кода пользователю. """
     time.sleep(random.uniform(1, 2))
     code = str(random.randint(1000, 9999))
-    cache.set(f"sms_{phone_number}", code, timeout=60*5)
+    cache.set(f"sms_{phone_number}", code, timeout=60 * 5)
     print(f"DEBUG: SMS code for {phone_number} is {code}")
 
 
@@ -47,8 +46,8 @@ def verify_and_auth_user(phone_number, code):
         'user': user
     }
 
-def activate_invite_code(user, invite_code:str):
 
+def activate_invite_code(user, invite_code: str):
     if user.referred_by:
         raise ValidationError({"invite_code": "Код уже активирован"})
 
