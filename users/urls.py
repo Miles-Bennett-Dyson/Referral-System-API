@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from users.apps import UsersConfig
-from users.views import UserViewSet, RequestSMSView
+from users.views import UserViewSet, RequestSMSView, VerifyCodeView, ActivateInviteCodeView
 
 app_name = UsersConfig.name
 
@@ -12,7 +12,8 @@ router = DefaultRouter()
 router.register(r"users", UserViewSet, basename="user")
 
 urlpatterns = [
-    path("login/", TokenObtainPairView.as_view(permission_classes=(AllowAny,)), name="login"),
+    path("login/", VerifyCodeView.as_view(permission_classes=(AllowAny,)), name="login"),
     path("token/refresh/", TokenRefreshView.as_view(permission_classes=(AllowAny,)), name="token_refresh"),
-    path('auth/request-sms/', RequestSMSView.as_view(), name='request-sms')
+    path('auth/request_sms/', RequestSMSView.as_view(), name='request_sms'),
+    path('user/activate_invite_code/', ActivateInviteCodeView.as_view(), name='activate_invite_code')
 ] + router.urls
