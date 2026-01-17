@@ -9,7 +9,7 @@ from users.validators import PhoneFieldValidator
 class PhoneSerializer(serializers.Serializer):
     phone_number = serializers.CharField(
         max_length=12,
-        min_length=12
+        min_length=12,
     )
 
     class Meta:
@@ -25,7 +25,6 @@ class VerifyCodeSerializer(serializers.Serializer):
     sms_code = serializers.IntegerField(
         min_value=1000,
         max_value=9999,
-        # error_messages="Введенный код имеет неверную длину."
     )
     class Meta:
         validators = [
