@@ -86,7 +86,7 @@ class VerifyCodeTestCase(APITestCase):
             "phone_number": phone_number,
             "sms_code": code
         }
-        response = self.client.post(url, data)
+        self.client.post(url, data)
         self.assertEqual(User.objects.filter(phone_number=phone_number).count(), 1)
 
     def test_bad_sms_code(self):

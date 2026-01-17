@@ -21,4 +21,9 @@ django = "^6.0.1"
 psycopg2-binary = "^2.9.11"
 djangorestframework = "^3.16.1"
 python-dotenv = "^1.2.1"
+coverage = "^7.13.1"
+
+
+[tool.poetry.group.lint.dependencies]
+flake8 = "^7.3.0"
 

@@ -2,7 +2,6 @@ from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
 from users.models import User
-from users.services import generate_invite_code
 from users.validators import PhoneFieldValidator
 
 
@@ -17,6 +16,7 @@ class PhoneSerializer(serializers.Serializer):
             PhoneFieldValidator()
         ]
 
+
 class VerifyCodeSerializer(serializers.Serializer):
     phone_number = serializers.CharField(
         max_length=12,
@@ -26,10 +26,12 @@ class VerifyCodeSerializer(serializers.Serializer):
         min_value=1000,
         max_value=9999,
     )
+
     class Meta:
         validators = [
             PhoneFieldValidator()
         ]
+
 
 class UserSerializer(serializers.ModelSerializer):
     list_of_referrals = SerializerMethodField()
@@ -40,6 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "phone_number", "invite_code", "referred_by", "list_of_referrals")
+
 
 class InviteCodeSerializer(serializers.Serializer):
     invite_code = serializers.CharField(

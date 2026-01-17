@@ -1,6 +1,5 @@
-from rest_framework import viewsets
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -21,12 +20,13 @@ class RequestSMSView(APIView):
 
         return Response(serializer.errors, status=400)
 
+
 class VerifyCodeView(APIView):
     def post(self, request):
         serializer = VerifyCodeSerializer(data=request.data)
         if serializer.is_valid():
             phone = serializer.validated_data['phone_number']
-            sms_code =  serializer.validated_data['sms_code']
+            sms_code = serializer.validated_data['sms_code']
             result = verify_and_auth_user(phone_number=phone, code=sms_code)
             if not result:
                 return Response({"error": "Неверный код"}, status=400)
@@ -39,6 +39,7 @@ class VerifyCodeView(APIView):
 
         return Response(serializer.errors, status=400)
 
+
 class ActivateInviteCodeView(APIView):
     def post(self, request):
         serializer = InviteCodeSerializer(data=request.data)
@@ -48,6 +49,7 @@ class ActivateInviteCodeView(APIView):
             activate_invite_code(user, invite_code)
             return Response({"message": "Код активирован"}, status=200)
         return Response(serializer.errors, status=400)
+
 
 class UserViewSet(RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer

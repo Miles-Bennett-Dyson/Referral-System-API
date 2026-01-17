@@ -91,7 +91,7 @@ DEFAULT_APPS = [
 
 ADDITIONAL_APPS = [
     "rest_framework",
-    ]
+]
 
 LOCAL_APPS = [
     "users",
