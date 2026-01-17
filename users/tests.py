@@ -49,6 +49,7 @@ class SendSmsCodeTestCase(APITestCase):
             )
             self.assertEqual(code, None)
 
+
 class VerifyCodeTestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.create(phone_number="+79277777777")
@@ -111,3 +112,70 @@ class VerifyCodeTestCase(APITestCase):
 
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
             self.assertIsNotNone(cache.get(f"sms_{phone_number}"))
+
+
+class ReferralTestCase(APITestCase):
+    def setUp(self):
+        self.user_a = User.objects.create(
+            phone_number="+79277777777",
+            invite_code="TU505F"
+        )
+        self.user_b = User.objects.create(
+            phone_number="+79277777778",
+            invite_code="TU709F"
+        )
+        self.client.force_authenticate(user=self.user_b)
+
+    def tearDown(self):
+        cache.clear()
+
+    def test_invite_code_activation(self):
+        """ Тест успешной активации инвайт-кода. """
+
+        url = reverse("users:activate_invite_code")
+        data = {
+            "invite_code": self.user_a.invite_code
+        }
+        response = self.client.post(url, data)
+        self.user_b.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.user_b.referred_by, self.user_a)
+
+    def test_bad_invite_code_activation(self):
+        """ Тест ввода неправильного инвайт-кода """
+
+        url = reverse("users:activate_invite_code")
+
+        test_cases = [
+            ("TU505", status.HTTP_400_BAD_REQUEST),
+            ("TU5050", status.HTTP_400_BAD_REQUEST),
+            (self.user_b.invite_code, status.HTTP_400_BAD_REQUEST),
+        ]
+        for bad_code, expected_status in test_cases:
+            data = {
+                "invite_code": bad_code
+            }
+            response = self.client.post(url, data)
+
+            self.assertEqual(
+                response.status_code,
+                expected_status,
+            )
+
+    def test_reactivation_invite_code(self):
+        """ Тест повторного ввода инвайт кода. """
+
+        user = User.objects.create(
+            phone_number="+79277777776",
+            invite_code="TU50AA",
+            referred_by=self.user_a
+        )
+        self.client.force_authenticate(user=user)
+        url = reverse("users:activate_invite_code")
+        data = {
+            "invite_code": self.user_a.invite_code
+        }
+        response = self.client.post(url, data)
+        user.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(user.referred_by, self.user_a)
