@@ -9,11 +9,11 @@ from users.views import UserViewSet, RequestSMSView, VerifyCodeView, ActivateInv
 app_name = UsersConfig.name
 
 router = DefaultRouter()
-router.register(r"users", UserViewSet, basename="user")
 
 urlpatterns = [
     path("login/", VerifyCodeView.as_view(permission_classes=(AllowAny,)), name="login"),
     path("token/refresh/", TokenRefreshView.as_view(permission_classes=(AllowAny,)), name="token_refresh"),
     path('auth/request_sms/', RequestSMSView.as_view(), name='request_sms'),
-    path('user/activate_invite_code/', ActivateInviteCodeView.as_view(), name='activate_invite_code')
+    path('user/activate_invite_code/', ActivateInviteCodeView.as_view(), name='activate_invite_code'),
+    path('user/', UserViewSet.as_view(), name='user')
 ] + router.urls
