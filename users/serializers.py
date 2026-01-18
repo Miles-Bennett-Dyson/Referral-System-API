@@ -21,11 +21,13 @@ class PhoneSerializer(serializers.Serializer):
 class VerifyCodeSerializer(serializers.Serializer):
     phone_number = serializers.CharField(
         max_length=12,
-        min_length=12
+        min_length=12,
+        help_text="Введите номер телефона, начиная с +79"
     )
     sms_code = serializers.IntegerField(
         min_value=1000,
         max_value=9999,
+        help_text="Введите цифровой код из смс"
     )
 
     class Meta:

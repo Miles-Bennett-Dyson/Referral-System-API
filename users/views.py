@@ -29,6 +29,14 @@ class RequestSMSView(APIView):
 
 
 class VerifyCodeView(APIView):
+
+    @swagger_auto_schema(
+        operation_description="Подтверждение смс-кода и авторизация и/или создание нового пользователя.",
+        request_body=VerifyCodeSerializer,
+        responses={200: '{"access": "access-token",  "refresh": "refresh-token", "invite_code": "user-invite_code"}',
+                   400: 'Ошибка валидации'}
+    )
+
     def post(self, request):
         serializer = VerifyCodeSerializer(data=request.data)
         if serializer.is_valid():
