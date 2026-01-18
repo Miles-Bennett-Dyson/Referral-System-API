@@ -79,6 +79,18 @@ AUTH_USER_MODEL = "users.User"
 
 LOGIN_URL = reverse_lazy("users:request_sms")
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Введите в поле: Bearer [ваш_токен]'
+        }
+    },
+    'USE_SESSION_AUTH': False, # Отключаем стандартную сессионную авторизацию для чистоты
+}
+
 #          *- INSTALLED APPS -*
 
 DEFAULT_APPS = [
@@ -145,7 +157,6 @@ if CACHE_ENABLED:
     CACHES = {
         "default": {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": os.getenv("REDIS_URL")}
     }
-
 
          # CORS settings
 

@@ -51,4 +51,5 @@ class InviteCodeSerializer(serializers.Serializer):
     invite_code = serializers.CharField(
         max_length=6,
         min_length=6,
+        help_text="Введите инвайт-код состоящий из 6 заглавных букв и цифр"
     )

@@ -56,6 +56,13 @@ class VerifyCodeView(APIView):
 
 
 class ActivateInviteCodeView(APIView):
+
+    @swagger_auto_schema(
+        operation_description="Активация инвайт-кода пользователем.",
+        request_body=InviteCodeSerializer,
+        responses={200: '{"message": "Код активирован"}', 400: 'Ошибка валидации'}
+    )
+
     def post(self, request):
         serializer = InviteCodeSerializer(data=request.data)
         if serializer.is_valid():
@@ -69,6 +76,7 @@ class ActivateInviteCodeView(APIView):
 class UserViewSet(RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    operation_summary = "Профиль текущего пользователя"
 
     def get_object(self):
         return self.request.user
