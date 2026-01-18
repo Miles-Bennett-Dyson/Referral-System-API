@@ -1,0 +1,60 @@
+# <p align="center">Реферальная система с SMS-авторизацией  </p>
+
+Микросервис на Django, реализующий систему инвайт-кодов и упрощенную авторизацию по номеру телефона.  
+Сервис имитирует отправку смс-кодов. Вместо иммитации можно использовать реальные сервисы по отправке СМС кодов,
+
+## <p align="center">🚀 Основной функционал  </p>
+Авторизация по SMS: Двухэтапный вход (запрос кода -> верификация).  
+Реферальная система: Генерация уникальных 6-значных инвайт-кодов.  
+JWT Auth: Использование access и refresh токенов для защиты эндпоинтов.  
+Профиль: Отображение личных данных и списка рефералов (номеров телефонов).  
+Документация: Интерактивные схемы API (Swagger и ReDoc).  
+
+## <p align="center">🛠 Технологии  </p>
+
+<table align="center" >
+  <tr>
+     <th> Python 3.13+   </th>
+     <th> Django 5.1+ </th>
+     <th> PostgreSQL </th>
+  </tr>
+  <tr>
+     <th>Poetry</th>
+     <th>DRF 3.15+</th>
+    <th>Docker & Docker Compose</th>
+   </tr>
+  <tr>
+    <th>SimpleJWT</th>
+    <th>drf-yasg</th>
+    <th>Redis</th>
+  </tr>
+</table>
+
+## <p align="center">📦 Быстрый запуск (Docker) </p>  
+Проект полностью контейнеризирован. Для запуска выполните:  
+`docker-compose up --build `
+Сервис будет доступен по адресу: http://localhost:8000  
+
+## <p align="center">⚙️ Локальная разработка (без Docker)  
+Установите зависимости (используется Poetry):  
+`poetry install`  
+Запустите Redis (обязательно если не подключен сервис отправки СМС-кодов):  
+`docker run -p 6379:6379 -d redis`  
+Примените миграции:  
+`python manage.py migrate`  
+Запустите сервер:  
+`python manage.py runserver`  
+
+## <p align="center">📖 Документация API  </p>
+После запуска проекта документация доступна в следующих форматах:  
+ReDoc: http://localhost:8000/redoc/ — подробное описание эндпоинтов.  
+Swagger: http://localhost:8000/swagger/ — песочница для тестирования запросов.  
+Важно: Для запросов к профилю используйте кнопку Authorize в Swagger и введите Bearer <ваш_token>.  
+
+## <p align="center">🧪 Тестирование  </p>
+Запуск тестов с проверкой покрытия (coverage):  
+`coverage run --source='.' manage.py test`  
+`coverage report -m`  
+
+## <p align="center">📋 Примеры запросов (Postman)  </p>
+Коллекция Postman приложена к проекту в файле referral_system.json.
