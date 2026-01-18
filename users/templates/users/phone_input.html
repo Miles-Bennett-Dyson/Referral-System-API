@@ -1,0 +1,84 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Вход по номеру телефона{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Вход</h2>
+    <p class="text-muted">Введите номер телефона для получения кода</p>
+</div>
+
+<div class="form-floating mb-3">
+    <input type="tel" class="form-control" id="phone" placeholder="+79270000000">
+    <label for="phone">Номер телефона</label>
+    <div id="error-message" class="invalid-feedback d-block mt-2"></div>
+</div>
+
+<button type="button" id="send-sms-btn" class="btn btn-primary btn-lg w-100 shadow-sm">
+    Отправить код
+</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('send-sms-btn').addEventListener('click', async function() {
+        const phone = document.getElementById('phone').value;
+        const errorDiv = document.getElementById('error-message');
+        const btn = this;
+
+        // Сбрасываем ошибки и блокируем кнопку
+        errorDiv.innerText = '';
+        btn.disabled = true;
+        btn.innerText = 'Отправка...';
+
+        try {
+            // 1. Делаем запрос к вашему API
+            const response = await fetch('/auth/request_sms/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') // Важно для Django
+                },
+                body: JSON.stringify({ phone_number: phone })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // 2. Если успешно — сохраняем телефон в localStorage, чтобы не вводить дважды
+                localStorage.setItem('user_phone', phone);
+                // 3. Перенаправляем на страницу ввода кода
+                window.location.href = '/template_verify_code/';
+            } else {
+                if (data.phone_number) {
+                errorDiv.innerText = data.phone_number[0];
+                }
+                else {
+        errorDiv.innerText = data.error || 'Проверьте введенные данные';
+    }
+            }
+        } catch (error) {
+            errorDiv.innerText = 'Ошибка соединения с сервером';
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Получить код';
+        }
+    });
+
+    // Функция для получения CSRF токена из куки (стандарт Django)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}

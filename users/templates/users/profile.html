@@ -1,0 +1,156 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Мой профиль{% endblock %}
+
+{% block content %}
+<!-- Секция данных пользователя -->
+<div class="profile-header text-center mb-4">
+    <h2 class="fw-bold">Личный кабинет</h2>
+    <p class="text-muted" id="user-phone">Загрузка...</p>
+</div>
+
+<div class="row g-3">
+    <!-- Ваш инвайт-код -->
+    <div class="col-12">
+        <div class="p-3 border rounded bg-light text-center">
+            <small class="text-uppercase fw-bold text-muted d-block">Ваш инвайт-код</small>
+            <span class="fs-3 fw-bold text-primary" id="user-invite">------</span>
+        </div>
+    </div>
+
+    <!-- Активация чужого кода -->
+    <div class="col-12" id="activation-section">
+        <div class="p-3 border rounded shadow-sm">
+            <label for="invite-to-activate" class="form-label small fw-bold">Активировать код друга</label>
+            <div class="input-group">
+                <input type="text" id="invite-to-activate" class="form-control" placeholder="6 знаков" maxlength="6">
+                <button class="btn btn-primary" id="activate-btn">Активировать</button>
+            </div>
+            <div id="activation-message" class="mt-2 small"></div>
+        </div>
+    </div>
+
+    <!-- Список рефералов -->
+    <div class="col-12">
+        <h5 class="fw-bold mt-3">Ваши рефералы:</h5>
+        <ul class="list-group list-group-flush border rounded" id="referrals-list">
+            <li class="list-group-item text-center text-muted">Загрузка списка...</li>
+        </ul>
+    </div>
+</div>
+
+<div class="mt-4 text-center">
+    <button class="btn btn-outline-danger btn-sm" id="logout-btn">Выйти из аккаунта</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Главная функция загрузки профиля
+    async function loadProfile() {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = "{% url 'users:request_sms_template' %}";
+            return;
+        }
+
+        try {
+            // Запрос к эндпоинту профиля (RetrieveUpdateDestroyAPIView)
+            const response = await fetch('/user/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                renderUI(data);
+            } else if (response.status === 401) {
+                logout();
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+
+    function renderUI(user) {
+        document.getElementById('user-phone').innerText = user.phone_number;
+        document.getElementById('user-invite').innerText = user.invite_code;
+
+        // Если код уже активирован, скрываем форму ввода
+        if (user.referred_by) {
+            document.getElementById('activation-section').innerHTML = 
+                `<div class="alert alert-success small mb-0">Вы были приглашены пользователем ID: ${user.referred_by}</div>`;
+        }
+
+        // Отрисовка списка рефералов (номеров телефонов)
+        const listContainer = document.getElementById('referrals-list');
+        if (user.list_of_referrals && user.list_of_referrals.length > 0) {
+            listContainer.innerHTML = user.list_of_referrals
+                .map(phone => `<li class="list-group-item">${phone}</li>`)
+                .join('');
+        } else {
+            listContainer.innerHTML = '<li class="list-group-item text-center text-muted">Пока никто не ввел ваш код</li>';
+        }
+    }
+
+    // Логика активации чужого кода
+    document.getElementById('activate-btn').addEventListener('click', async function() {
+        const codeInput = document.getElementById('invite-to-activate');
+        const messageDiv = document.getElementById('activation-message');
+        const token = localStorage.getItem('access_token');
+
+        try {
+            const response = await fetch('/user/activate_invite_code/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ invite_code: codeInput.value })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                messageDiv.className = "mt-2 small text-success";
+                messageDiv.innerText = "Код успешно активирован!";
+                setTimeout(() => loadProfile(), 1500); // Перезагружаем профиль через 1.5 сек
+            } else {
+                messageDiv.className = "mt-2 small text-danger";
+                messageDiv.innerText = data.error || data.invite_code || "Ошибка активации";
+            }
+        } catch (error) {
+            messageDiv.innerText = "Ошибка соединения";
+        }
+    });
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "{% url 'users:request_sms_template' %}";
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', logout);
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Запуск при загрузке
+    loadProfile();
+</script>
+{% endblock %}

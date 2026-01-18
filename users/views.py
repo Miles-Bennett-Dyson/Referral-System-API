@@ -1,3 +1,4 @@
+from django.views.generic import TemplateView
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny
@@ -80,3 +81,13 @@ class UserViewSet(RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class RequestSMSTemplateView(TemplateView):
+    template_name = "users/phone_input.html"
+
+class VerifyCodeTemplateView(TemplateView):
+    template_name = "users/code_verify.html"
+
+class ProfileView(TemplateView):
+    template_name = 'users/profile.html'
