@@ -1,3 +1,4 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -10,6 +11,12 @@ from users.services import send_sms_code, verify_and_auth_user, activate_invite_
 
 class RequestSMSView(APIView):
     permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        operation_description="Запрос СМС-кода на указанный номер",
+        request_body=PhoneSerializer,
+        responses={200: '{"message": "Код отправлен"}', 400: 'Ошибка валидации'}
+    )
 
     def post(self, request):
         serializer = PhoneSerializer(data=request.data)

@@ -9,6 +9,7 @@ class PhoneSerializer(serializers.Serializer):
     phone_number = serializers.CharField(
         max_length=12,
         min_length=12,
+        help_text="Введите номер телефона, начиная с +79"
     )
 
     class Meta:
