@@ -6,9 +6,10 @@ from pathlib import Path
 from django.urls import reverse_lazy
 from dotenv import load_dotenv
 
+load_dotenv(override=True)
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(override=True)
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = True if os.getenv("DEBUG") == "True" else False
@@ -76,7 +77,7 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = "users.User"
 
-LOGIN_URL = reverse_lazy("users:login")
+LOGIN_URL = reverse_lazy("users:request_sms")
 
 #          *- INSTALLED APPS -*
 
@@ -91,6 +92,8 @@ DEFAULT_APPS = [
 
 ADDITIONAL_APPS = [
     "rest_framework",
+    "rest_framework_simplejwt",
+    "drf_yasg",
 ]
 
 LOCAL_APPS = [
@@ -122,6 +125,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
+
 #          STATIC & MEDIA settings
 
 STATIC_URL = "static/"
@@ -133,14 +137,24 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-#          CORS settings
+#          CACHE settings
 
-# CORS_ALLOWED_ORIGINS = [
-#     os.getenv("CORS_ALLOWED_ORIGINS"),
-# ]
-# CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "http://127.0.0.1,http://localhost").split(",")
-#
-# CORS_ALLOW_ALL_ORIGINS = False
+CACHE_ENABLED = True
+
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": os.getenv("REDIS_URL")}
+    }
+
+
+         # CORS settings
+
+CORS_ALLOWED_ORIGINS = [
+    os.getenv("CORS_ALLOWED_ORIGINS"),
+]
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "http://127.0.0.1,http://localhost").split(",")
+
+CORS_ALLOW_ALL_ORIGINS = False
 
 if 'test' in sys.argv:
     DATABASES = {
