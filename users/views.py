@@ -89,5 +89,5 @@ class RequestSMSTemplateView(TemplateView):
 class VerifyCodeTemplateView(TemplateView):
     template_name = "users/code_verify.html"
 
-class ProfileView(TemplateView):
+class ProfileTemplateView(TemplateView):
     template_name = 'users/profile.html'
