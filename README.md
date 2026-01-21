@@ -38,7 +38,7 @@ JWT Auth: Использование access и refresh токенов для з�
 ## <p align="center">⚙️ Локальная разработка (без Docker)  
 Установите зависимости (используется Poetry):  
 `poetry install`  
-Запустите Redis (обязательно если не подключен сервис отправки СМС-кодов):  
+Запустите Redis:  
 `docker run -p 6379:6379 -d redis`  
 Примените миграции:  
 `python manage.py migrate`  
