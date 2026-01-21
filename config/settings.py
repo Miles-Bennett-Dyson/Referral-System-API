@@ -88,7 +88,7 @@ SWAGGER_SETTINGS = {
             'description': 'Введите в поле: Bearer [ваш_токен]'
         }
     },
-    'USE_SESSION_AUTH': False, # Отключаем стандартную сессионную авторизацию для чистоты
+    'USE_SESSION_AUTH': False,  # Отключаем стандартную сессионную авторизацию для чистоты
 }
 
 #          *- INSTALLED APPS -*
@@ -158,7 +158,7 @@ if CACHE_ENABLED:
         "default": {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": os.getenv("REDIS_URL")}
     }
 
-         # CORS settings
+    # CORS settings
 
 CORS_ALLOWED_ORIGINS = [
     os.getenv("CORS_ALLOWED_ORIGINS"),

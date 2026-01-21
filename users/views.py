@@ -18,7 +18,6 @@ class RequestSMSView(APIView):
         request_body=PhoneSerializer,
         responses={200: '{"message": "Код отправлен"}', 400: 'Ошибка валидации'}
     )
-
     def post(self, request):
         serializer = PhoneSerializer(data=request.data)
         if serializer.is_valid():
@@ -37,7 +36,6 @@ class VerifyCodeView(APIView):
         responses={200: '{"access": "access-token",  "refresh": "refresh-token", "invite_code": "user-invite_code"}',
                    400: 'Ошибка валидации'}
     )
-
     def post(self, request):
         serializer = VerifyCodeSerializer(data=request.data)
         if serializer.is_valid():
@@ -63,7 +61,6 @@ class ActivateInviteCodeView(APIView):
         request_body=InviteCodeSerializer,
         responses={200: '{"message": "Код активирован"}', 400: 'Ошибка валидации'}
     )
-
     def post(self, request):
         serializer = InviteCodeSerializer(data=request.data)
         if serializer.is_valid():
@@ -86,8 +83,10 @@ class UserViewSet(RetrieveUpdateDestroyAPIView):
 class RequestSMSTemplateView(TemplateView):
     template_name = "users/phone_input.html"
 
+
 class VerifyCodeTemplateView(TemplateView):
     template_name = "users/code_verify.html"
+
 
 class ProfileTemplateView(TemplateView):
     template_name = 'users/profile.html'
