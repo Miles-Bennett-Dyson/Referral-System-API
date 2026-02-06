@@ -9,19 +9,16 @@ class PhoneSerializer(serializers.Serializer):
     phone_number = serializers.CharField(
         max_length=12,
         min_length=12,
+        validators=[PhoneFieldValidator()],
         help_text="Введите номер телефона, начиная с +79"
     )
-
-    class Meta:
-        validators = [
-            PhoneFieldValidator()
-        ]
 
 
 class VerifyCodeSerializer(serializers.Serializer):
     phone_number = serializers.CharField(
         max_length=12,
         min_length=12,
+        validators=[PhoneFieldValidator()],
         help_text="Введите номер телефона, начиная с +79"
     )
     sms_code = serializers.IntegerField(
@@ -29,11 +26,6 @@ class VerifyCodeSerializer(serializers.Serializer):
         max_value=9999,
         help_text="Введите цифровой код из смс"
     )
-
-    class Meta:
-        validators = [
-            PhoneFieldValidator()
-        ]
 
 
 class UserSerializer(serializers.ModelSerializer):
