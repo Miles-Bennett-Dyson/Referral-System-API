@@ -17,7 +17,7 @@ urlpatterns = [
     path("template_verify_code/", VerifyCodeTemplateView.as_view(), name="verify_code_template"),
     path("template_user_profile/", ProfileTemplateView.as_view(), name="user_profile"),
     path("token/refresh/", TokenRefreshView.as_view(permission_classes=(AllowAny,)), name="token_refresh"),
-    path('auth/request_sms/', RequestSMSView.as_view(), name='request_sms'),
+    path('auth/request_sms/', RequestSMSView.as_view(permission_classes=(AllowAny,)), name='request_sms'),
     path('user/activate_invite_code/', ActivateInviteCodeView.as_view(), name='activate_invite_code'),
     path('user/', UserViewSet.as_view(), name='user')
 ] + router.urls

@@ -11,7 +11,6 @@ from users.services import send_sms_code, verify_and_auth_user, activate_invite_
 
 
 class RequestSMSView(APIView):
-    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         operation_description="Запрос СМС-кода на указанный номер",
