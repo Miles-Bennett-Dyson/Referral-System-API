@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Реферальная система{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+<body>
+
+    <div class="container main-container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    {% block scripts %}{% endblock %}
+
+    <script src="https://cdn.jsdelivr.net"></script>
+</body>
+</html>

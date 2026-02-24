@@ -1,0 +1,82 @@
+{
+	"info": {
+		"name": "Referral System API 2026",
+		"description": "Коллекция для тестирования реферальной системы.\n1. Запросите СМС\n2. Введите код (из консоли Django)\n3. Токен сохранится автоматически для профиля",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Request SMS",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"phone_number\": \"+79270879113\"\n}",
+					"options": { "raw": { "language": "json" } }
+				},
+				"url": { "raw": "{{base_url}}/auth/request_sms/", "host": ["{{base_url}}"], "path": ["auth", "request_sms", ""] }
+			}
+		},
+		{
+			"name": "2. Verify Code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if (jsonData.access) {",
+							"    pm.globals.set(\"jwt_token\", jsonData.access);",
+							"    console.log(\"Токен сохранен в глобальные переменные\");",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"phone_number\": \"+79270879113\",\n    \"sms_code\": \"1234\"\n}",
+					"options": { "raw": { "language": "json" } }
+				},
+				"url": { "raw": "{{base_url}}/login/", "host": ["{{base_url}}"], "path": ["login", ""] }
+			}
+		},
+		{
+			"name": "3. Get My Profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [ { "key": "token", "value": "{{jwt_token}}", "type": "string" } ]
+				},
+				"method": "GET",
+				"header": [],
+				"url": { "raw": "{{base_url}}/user/", "host": ["{{base_url}}"], "path": ["user", ""] }
+			}
+		},
+		{
+			"name": "4. Activate Invite Code",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [ { "key": "token", "value": "{{jwt_token}}", "type": "string" } ]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"invite_code\": \"ABC123\"\n}",
+					"options": { "raw": { "language": "json" } }
+				},
+				"url": { "raw": "{{base_url}}/user/activate_invite_code/", "host": ["{{base_url}}"], "path": ["user", "activate_invite_code", ""] }
+			}
+		}
+	],
+	"variable": [
+		{ "key": "base_url", "value": "http://127.0.0.1:8000", "type": "string" }
+	]
+}

@@ -8,6 +8,15 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "djangorestframework-simplejwt (>=5.5.1,<6.0.0)",
+    "django (>=6.0.1)",
+    "djangorestframework (>=3.16.1)",
+    "djangorestframework-simplejwt (>=5.5.1)",
+    "psycopg2-binary (>=2.9.11)",
+    "redis (>=7.1.0)",
+    "gunicorn (>=23.0.0)",
+    "python-dotenv (>=1.2.1)",
+    "drf-yasg (>=1.21.14)"
 ]
 
 
@@ -16,8 +25,7 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
-django = "^6.0.1"
-psycopg2-binary = "^2.9.11"
-djangorestframework = "^3.16.1"
-python-dotenv = "^1.2.1"
+coverage = "^7.13.1"
 
+[tool.poetry.group.lint.dependencies]
+flake8 = "^7.3.0"
